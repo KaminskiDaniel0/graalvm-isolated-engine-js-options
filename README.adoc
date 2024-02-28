@@ -1,4 +1,1 @@
-When running the Application.java two contexts with slightly different engine configurations get created and evaluated.
-The first context will evaluate without error and write two log statements to the stdout and err ByteArrayOutputStreams.
-
-The second context with its engine will not even get created because the attempt to try and change "js.xyz" settings is not permitted in the `SandboxPolicy.ISOLATED` (or any `SandboxPolicy` that is stricter than `TRUSTED` for that matter)
+With `SandboxPolicy > TRUSTED` setting _js.xyz_ options is not possible
