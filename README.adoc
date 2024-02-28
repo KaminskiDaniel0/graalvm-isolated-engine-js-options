@@ -1,1 +1,53 @@
-With `SandboxPolicy > TRUSTED` setting _js.xyz_ options is not possible
+In `JSContextOptionsOptionDescriptors.getSandboxPolicy(String optionName)` we decide about the level of SandboxPolicy to which a "js" option belongs
+and up to which it can be used when configuring context/engine builders.
+
+[source, java]
+----
+public SandboxPolicy getSandboxPolicy(String optionName) {
+        assert get(optionName) != null : "Unknown option " + optionName;
+        switch (optionName) {
+            case "js.allow-eval" :
+                return SandboxPolicy.UNTRUSTED;
+            case "js.console" :
+                return SandboxPolicy.UNTRUSTED;
+            case "js.ecmascript-version" :
+                return SandboxPolicy.UNTRUSTED;
+            case "js.strict" :
+                return SandboxPolicy.UNTRUSTED;
+            case "js.timer-resolution" :
+                return SandboxPolicy.UNTRUSTED;
+            case "js.unhandled-rejections" :
+                return SandboxPolicy.CONSTRAINED;
+            default :
+                return SandboxPolicy.TRUSTED;
+        }
+    }
+----
+
+The problem with this approach is that specific settings are enabled by default
+and cannot be disabled in higher SandboxPolicies because of them belonging
+implicitly to `TRUSTED`.
+
+When using `SandboxPolicy.ISOLATED`, the settings on the left hand side of the table
+are available in guest language code and can not be disabled. In contrast to that,
+the settings on the right hand side are disabled by default and can not be used in
+guest language scripts.
+
+|===
+|https://www.graalvm.org/latest/reference-manual/js/JavaScriptCompatibility/#global-properties[Work in `ISOLATED`] |https://www.graalvm.org/latest/reference-manual/js/JavaScriptCompatibility/#additional-global-functions-in-the-js-shell[do *not* work in `ISOLATED`]
+
+|print('foo')
+|quit(1)
+
+|load({name: 'index.js', script: '1;'})
+|read('foobar.txt')
+
+|print(https://www.graalvm.org/latest/reference-manual/js/JavaScriptCompatibility/#graal-object[Graal.versionECMAScript])
+|readbuffer('foobar.txt')
+
+|print(https://www.graalvm.org/latest/reference-manual/js/JavaScriptCompatibility/#graal-object[Graal.versionGraalVM])
+|readline.question('foobar?')
+
+|print(https://www.graalvm.org/latest/reference-manual/js/JavaScriptCompatibility/#graal-object[Graal.isGraalRuntime()])
+|
+|===
