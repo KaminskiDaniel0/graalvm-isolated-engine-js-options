@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
             <groupId>org.graalvm.polyglot</groupId>
-            <artifactId>js</artifactId>
+            <artifactId>js-isolate</artifactId>
             <version>${graalvm.version}</version>
             <type>pom</type>
         </dependency>
@@ -78,6 +78,15 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                    <compilerArgs>--enable-preview</compilerArgs>
                 </configuration>
             </plugin>
         </plugins>
