@@ -26,6 +26,8 @@ public class Application implements ApplicationRunner {
             .sandbox(SandboxPolicy.ISOLATED)
             .out(out)
             .err(err)
+            .option("engine.MaxIsolateMemory", "150MB")
+            .option("sandbox.MaxCPUTime", "50ms")
             .option("js.console", "false"); // none of the "js.xyz" options are possible
 
         try (final Context context = builder.build()) {
