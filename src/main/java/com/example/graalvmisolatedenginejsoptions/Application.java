@@ -24,6 +24,8 @@ public class Application implements ApplicationRunner {
     @Override
     public void run(final ApplicationArguments args) {
 
+        // The first try-catch block contains a context and an engine with the ISOLATED sandbox policy set but without any attempt to try and change any "js.xyz" settings
+        // -> console.log() is possible!
         try {
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
             final ByteArrayOutputStream err = new ByteArrayOutputStream();
@@ -83,6 +85,8 @@ public class Application implements ApplicationRunner {
 
         log.info("First round done, now an exception will get thrown because the js.xyz options are not allowed in an ISOLATED context/engine");
 
+        // The second try-catch block contains a context and an engine with the ISOLATED sandboxy policy aswell but we attempt to restrict access to "js.console" and other "js.xyz" settings
+        // -> an IllegalArgumentException gets thrown because these settings seem to not be available in SandboxPolicies > TRUSTED
         try {
             final ByteArrayOutputStream out = new ByteArrayOutputStream();
             final ByteArrayOutputStream err = new ByteArrayOutputStream();
